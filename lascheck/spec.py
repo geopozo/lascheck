@@ -124,6 +124,10 @@ class ValidUnitForDepth(Rule):
             return True
         return True
 
+def within_range(value, step, error=.0001):
+    sigma = step * error
+    return abs(value) <= sigma or abs(value-step) <= sigma
+
 
 class ValidDepthDividedByStep(Rule):
     @staticmethod
@@ -131,9 +135,10 @@ class ValidDepthDividedByStep(Rule):
         if "Well" in las_file.sections and 'STRT' in las_file.well and \
                 'STOP' in las_file.well and 'STEP' in las_file.well:
             las_file.non_conforming_depth = []
-            if las_file.well['STRT'].value % las_file.well['STEP'].value != 0:
+            step = las_file.well['STEP'].value
+            distance = las_file.well['STRT'].value - las_file.well['STOP'].value
+            if not within_range(distance % step, step):
                 las_file.non_conforming_depth.append('STRT')
-            if las_file.well['STOP'].value % las_file.well['STEP'].value != 0:
                 las_file.non_conforming_depth.append('STOP')
             return las_file.non_conforming_depth.__len__() == 0
         return False
