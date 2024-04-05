@@ -135,8 +135,8 @@ class ValidDepthDividedByStep(Rule):
         if "Well" in las_file.sections and 'STRT' in las_file.well and \
                 'STOP' in las_file.well and 'STEP' in las_file.well:
             las_file.non_conforming_depth = []
-            step = las_file.well['STEP'].value
-            distance = las_file.well['STRT'].value - las_file.well['STOP'].value
+            step = abs(las_file.well['STEP'].value)
+            distance = abs(las_file.well['STRT'].value - las_file.well['STOP'].value)
             if not within_range(distance % step, step):
                 las_file.non_conforming_depth.append('STRT')
                 las_file.non_conforming_depth.append('STOP')
