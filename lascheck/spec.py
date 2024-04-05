@@ -117,10 +117,13 @@ class ValidUnitForDepth(Rule):
                 'STOP' in las_file.well and 'STEP' in las_file.well:
             if (las_file.curves[0].mnemonic == "DEPT" or
                     las_file.curves[0].mnemonic == "DEPTH"):
-                index_unit = las_file.curves[0].unit
-                return (index_unit == 'M' or index_unit == 'F' or index_unit == 'FT') \
-                    and las_file.well['STRT'].unit == index_unit and las_file.well['STOP'].unit == index_unit and \
-                    las_file.well['STEP'].unit == index_unit
+                index_unit = "FT" if las_file.curves[0].unit == "F" else las_file.curves[0].unit
+                strt_unit = "FT" if las_file.well['STRT'].unit == "F" else las_file.well['STRT'].unit
+                stop_unit = "FT" if las_file.well['STOP'].unit == "F" else las_file.well['STOP'].unit
+                step_unit = "FT" if las_file.well['STEP'].unit == "F" else las_file.well['STEP'].unit
+                return (index_unit in ['M', 'FT']) \
+                    and strt_unit == index_unit and stop_unit == index_unit and \
+                    step_unit == index_unit
             return True
         return True
 
